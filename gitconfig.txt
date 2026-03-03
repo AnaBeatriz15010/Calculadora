@@ -5,3 +5,9 @@ git config --global user.email anaevalegilmar@gmail.com
 -- Criar um projeto vazio
 npx create-expo-app@latest calculadora --template blank 
 
+-- toda aula ao comecar
+cd calculadora
+npm i
+
+-- executar 
+npx expo start --android
