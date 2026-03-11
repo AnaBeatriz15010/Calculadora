@@ -15,8 +15,6 @@ export default function App() {
     } else{
       setDisplay(display === '0' ? String(num) : display + num);
     }
-  const handleNumberPress = (num) => {
-  
   }
 
   const handleClear = () => {
@@ -25,8 +23,61 @@ export default function App() {
     setOperator(null);
     setWaitingForNewValue(false);
   }
-  }
   
+  const handleOperatorPress = (op) => {
+    const inputValue = parseFloat(display);
+
+    if (previousValue === null) {
+      setPreviousValue(inputValue);
+
+    }else{
+      const result = calculate(previousValue, inputValue, operator);
+      setDisplay(String(result));
+      setPreviousValue(result);
+    }
+
+    setWaitingForNewValue(true);
+    setOperator(op);
+  }
+
+  const calculate = (firstValue, secondValue, operator) => {
+    switch (operator){
+      case '+': return firstValue + secondValue;
+      case '-': return firstValue - secondValue;
+      case 'x': return firstValue * secondValue;
+      case '÷': return firstValue / secondValue;
+      default: return secondValue;
+    }
+  }
+
+  const handleEquals = () => {
+    const inputValue = parseFloat(display);
+
+    if (previousValue != null && operator){
+      const result = calculate(previousValue, inputValue, operator);
+      setDisplay(String(result));
+      setPreviousValue(null);
+    setWaitingForNewValue(true);
+   }
+  }
+
+  const handlePercentage = () => {
+    setDisplay(String(parseFloat(display) / 100));
+  }
+
+  const handleToggleSign = () => {
+    setDisplay(String(parseFloat(display) * -1));
+  }
+
+  const handleDecimal = () => {
+    if (waitingForNewValue) {
+      setDisplay('0.');
+      setWaitingForNewValue(false);
+    } else if (display.indexOf('.') === -1){
+      setDisplay(display + '.');
+    }
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
@@ -39,16 +90,16 @@ export default function App() {
 
       {/* Linha 1 */}
       <View style={styles.row}>
-        <TouchableOpacity style={styles.functionButton}>
+        <TouchableOpacity style={styles.functionButton} onPress={handleClear}>
           <Text style={styles.functionText}>C</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.functionButton}>
+        <TouchableOpacity style={styles.functionButton} onPress={handleToggleSign}>
           <Text style={styles.functionText}>+/-</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.functionButton}>
+        <TouchableOpacity style={styles.functionButton} onPress={handlePercentage}>
           <Text style={styles.functionText}>%</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.operatorButton}>
+        <TouchableOpacity style={styles.operatorButton} onPress={() => handleOperatorPress('÷')}>
           <Text style={styles.operatorText}>÷</Text>
         </TouchableOpacity>
       </View>
@@ -64,7 +115,7 @@ export default function App() {
         <TouchableOpacity style={styles.buttonNumber} onPress={() => handleNumberPress(9)}>
           <Text style={styles.buttonText}>9</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.operatorButton}>
+        <TouchableOpacity style={styles.operatorButton} onPress={() => handleOperatorPress('x')}>
           <Text style={styles.operatorText}>x</Text>
         </TouchableOpacity>
       </View>
@@ -80,7 +131,7 @@ export default function App() {
         <TouchableOpacity style={styles.buttonNumber}onPress={() => handleNumberPress(6)}>
           <Text style={styles.buttonText}>6</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.operatorButton}>
+        <TouchableOpacity style={styles.operatorButton} onPress={() => handleOperatorPress('-')}>
           <Text style={styles.operatorText}>-</Text>
         </TouchableOpacity>
       </View>
@@ -96,7 +147,7 @@ export default function App() {
         <TouchableOpacity style={styles.buttonNumber}onPress={() => handleNumberPress(3)}>
           <Text style={styles.buttonText}>3</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.operatorButton}>
+        <TouchableOpacity style={styles.operatorButton} onPress={() => handleOperatorPress('+')}>
           <Text style={styles.operatorText}>+</Text>
         </TouchableOpacity>
       </View>
@@ -106,10 +157,10 @@ export default function App() {
         <TouchableOpacity style={[styles.buttonNumber, styles.doubleWidthButton]}>
           <Text style={styles.buttonText}>0</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonNumber}>
+        <TouchableOpacity style={styles.buttonNumber} onPress={handleDecimal}>
           <Text style={styles.buttonText}>.</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.operatorButton}>
+        <TouchableOpacity style={styles.operatorButton} onPress={handleEquals}>
           <Text style={styles.operatorText}>=</Text>
         </TouchableOpacity>
       </View>
